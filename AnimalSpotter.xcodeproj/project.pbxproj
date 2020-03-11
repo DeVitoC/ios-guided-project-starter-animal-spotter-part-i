@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BBF9DC4A2419483D00161F02 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9DC492419483D00161F02 /* User.swift */; };
+		BBF9DC4C24195A5C00161F02 /* Bearer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF9DC4B24195A5C00161F02 /* Bearer.swift */; };
 		CEB8F70C236B8D3600455692 /* AnimalDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB8F70B236B8D3600455692 /* AnimalDetailViewController.swift */; };
 		CEDCA57B22668AB2009EA535 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDCA57A22668AB2009EA535 /* AppDelegate.swift */; };
 		CEDCA58022668AB2009EA535 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDCA57E22668AB2009EA535 /* Main.storyboard */; };
@@ -18,6 +20,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BBF9DC492419483D00161F02 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BBF9DC4B24195A5C00161F02 /* Bearer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bearer.swift; sourceTree = "<group>"; };
 		CEB8F70B236B8D3600455692 /* AnimalDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalDetailViewController.swift; sourceTree = "<group>"; };
 		CEDCA57722668AB2009EA535 /* AnimalSpotter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimalSpotter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDCA57A22668AB2009EA535 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -41,6 +45,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BBF9DC43241942AA00161F02 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CEDCA58122668AB2009EA535 /* Assets.xcassets */,
+				CEDCA58322668AB2009EA535 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BBF9DC44241942B400161F02 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CEDCA57E22668AB2009EA535 /* Main.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BBF9DC45241942CE00161F02 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		BBF9DC482419481700161F02 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BBF9DC492419483D00161F02 /* User.swift */,
+				BBF9DC4B24195A5C00161F02 /* Bearer.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		CEDCA56E22668AB2009EA535 = {
 			isa = PBXGroup;
 			children = (
@@ -60,22 +97,15 @@
 		CEDCA57922668AB2009EA535 /* AnimalSpotter */ = {
 			isa = PBXGroup;
 			children = (
-				CEDCA59722669673009EA535 /* Application */,
+				BBF9DC482419481700161F02 /* Models */,
+				BBF9DC44241942B400161F02 /* Views */,
 				CEDCA5982266967E009EA535 /* View Controllers */,
-				CEDCA5962266966C009EA535 /* Models */,
-				CEDCA57E22668AB2009EA535 /* Main.storyboard */,
-				CEDCA58122668AB2009EA535 /* Assets.xcassets */,
-				CEDCA58322668AB2009EA535 /* LaunchScreen.storyboard */,
+				BBF9DC45241942CE00161F02 /* Controllers */,
+				CEDCA59722669673009EA535 /* Application */,
+				BBF9DC43241942AA00161F02 /* Resources */,
 				CEDCA58622668AB2009EA535 /* Info.plist */,
 			);
 			path = AnimalSpotter;
-			sourceTree = "<group>";
-		};
-		CEDCA5962266966C009EA535 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		CEDCA59722669673009EA535 /* Application */ = {
@@ -170,6 +200,8 @@
 			files = (
 				CEB8F70C236B8D3600455692 /* AnimalDetailViewController.swift in Sources */,
 				CEDCA59A226697BD009EA535 /* APIController.swift in Sources */,
+				BBF9DC4A2419483D00161F02 /* User.swift in Sources */,
+				BBF9DC4C24195A5C00161F02 /* Bearer.swift in Sources */,
 				CEDCA59122668D0F009EA535 /* LoginViewController.swift in Sources */,
 				CEDCA57B22668AB2009EA535 /* AppDelegate.swift in Sources */,
 				CEDCA58F22668BCF009EA535 /* AnimalsTableViewController.swift in Sources */,
