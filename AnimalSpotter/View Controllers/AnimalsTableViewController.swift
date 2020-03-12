@@ -12,7 +12,11 @@ class AnimalsTableViewController: UITableViewController {
     
     // MARK: - Properties
     
-    private var animalNames: [String] = []
+    private var animalNames: [String] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     let apiController = APIController()
 
     // MARK: - View Lifecycle
@@ -49,6 +53,42 @@ class AnimalsTableViewController: UITableViewController {
     
     @IBAction func getAnimals(_ sender: UIBarButtonItem) {
         // fetch all animals from API
+        
+        // Use this try approach if you don't care about hte failure reason
+//        apiController.fetchAllAnimalNames { result in
+//            if let names = try? result.get() {
+//                DispatchQueue.main.async {
+//                    self.animalNames = names
+//                }
+//            }
+//        }
+        
+        // Use this try approach if you want to enumerate the failure reasons
+        apiController.fetchAllAnimalNames { result in
+            do {
+                let names = try result.get()
+                DispatchQueue.main.async {
+                    self.animalNames = names
+                }
+            } catch {
+                if let error = error as? NetworkError {
+                    switch error {
+                    case .noAuth:
+                        NSLog("No bearer token exists")
+                    case .badAuth:
+                        NSLog("Bearer token invalid")
+                    case .otherError:
+                        NSLog("Other Error occured, see log")
+                    case .badData:
+                        NSLog("No data received, or data corrupted")
+                    case .noDecode:
+                        NSLog("JSON could not be decoded")
+                    case .badURL:
+                        NSLog("URL invalid")
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Navigation
@@ -59,6 +99,13 @@ class AnimalsTableViewController: UITableViewController {
             // inject dependencies
             if let loginVC = segue.destination as? LoginViewController {
                 loginVC.apiController = apiController
+            }
+        } else if segue.identifier == "ShowAnimalDetailSegue" {
+            if let detailVC = segue.destination as? AnimalDetailViewController {
+                detailVC.apiContoller = apiController
+                if let indexPath = tableView.indexPathForSelectedRow {
+                    detailVC.animalName = animalNames[indexPath.row]
+                }
             }
         }
     }

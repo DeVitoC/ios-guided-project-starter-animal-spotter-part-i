@@ -20,6 +20,7 @@ enum NetworkError: Error {
     case badAuth
     case badData
     case noDecode
+    case badURL
 }
 
 class APIController {
@@ -111,45 +112,117 @@ class APIController {
     
     // create function for fetching all animal names
     func fetchAllAnimalNames(completion: @escaping (Result<[String], NetworkError>) -> Void) {
+            guard let bearer = bearer else {
+                completion(.failure(.noAuth))
+                return
+            }
+            let allAnimalsUrl = baseUrl.appendingPathComponent("animals/all")
+            var request = URLRequest(url: allAnimalsUrl)
+            request.httpMethod = HTTPMethod.get.rawValue
+            request.setValue("Bearer \(bearer.token)", forHTTPHeaderField: "Authorization")
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    NSLog("Error receiving animal name data: \(error)")
+                    completion(.failure(.otherError))
+                    return
+                }
+                if let response = response as? HTTPURLResponse,
+                    response.statusCode == 401 {
+                    // User is not authorized (no token or bad token)
+                    NSLog("Server responded with 401 status code (not authorized).")
+                    completion(.failure(.badAuth))
+                    return
+                }
+                guard let data = data else {
+                    NSLog("Server responded with no data to decode.sup")
+                    completion(.failure(.badData))
+                    return
+                }
+                let decoder = JSONDecoder()
+                do {
+                    let animalNames = try decoder.decode([String].self, from: data)
+                    completion(.success(animalNames))
+                } catch {
+                    NSLog("Error decoding animal objects: \(error)")
+                    completion(.failure(.noDecode))
+                }
+            }.resume()
+        }
+    
+    // create function for fetching animal details
+    func fetchDetails(for animalName: String, completion: @escaping (Result<Animal, NetworkError>) -> Void) {
         guard let bearer = bearer else {
             completion(.failure(.noAuth))
-            return }
-        let allAnimalsUrl = baseUrl.appendingPathComponent("animals/all")
-        var request = URLRequest(url: allAnimalsUrl)
-        
+            return
+        }
+        let animalDetailsURL = baseUrl.appendingPathComponent("animals/\(animalName)")
+        var request = URLRequest(url: animalDetailsURL)
         request.httpMethod = HTTPMethod.get.rawValue
-        request.setValue("Bearer \(bearer)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(bearer.token)", forHTTPHeaderField: "Authorization")
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                NSLog("Error receiving animal name data: \(error)")
+                NSLog("Error receiving animal detail data: \(error)")
                 completion(.failure(.otherError))
                 return
             }
-            
-            if let response = response as? HTTPURLResponse, response.statusCode == 401 {
+            if let response = response as? HTTPURLResponse,
+                response.statusCode == 401 {
                 // User is not authorized (no token or bad token)
+                NSLog("Server responded with 401 status code (not authorized).")
                 completion(.failure(.badAuth))
                 return
             }
-            
             guard let data = data else {
+                NSLog("Server responded with no data to decode.sup")
                 completion(.failure(.badData))
                 return
             }
             
             let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .secondsSince1970
+            
             do {
-                let animalNames = try decoder.decode([String].self, from: data)
-                completion(.success(animalNames))
+                let animalDetails = try decoder.decode(Animal.self, from: data)
+                completion(.success(animalDetails))
             } catch {
-                NSLog("Error decoding animal objects: \(error)")
+                NSLog("Error decoding animal object \(animalName): \(error)")
                 completion(.failure(.noDecode))
             }
         }.resume()
     }
     
-    // create function for fetching animal details
-    
     // create function to fetch image
+    func fetchImage(at urlString: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
+        
+        guard let imageURL = URL(string: urlString) else {
+            completion(.failure(.badURL))
+            return
+        }
+        
+        var request = URLRequest(url: imageURL)
+        request.httpMethod = HTTPMethod.get.rawValue
+                
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                NSLog("Error receiving animal image data: \(error)")
+                completion(.failure(.otherError))
+                return
+            }
+
+            guard let data = data else {
+                NSLog("GitHub responded with no image data")
+                completion(.failure(.badData))
+                return
+            }
+            
+            guard let image = UIImage(data: data) else {
+                NSLog("Image data is incomplete or corrupted")
+                completion(.failure(.badData))
+                return
+            }
+            
+            completion(.success(image))
+        }.resume()
+    }
 }
